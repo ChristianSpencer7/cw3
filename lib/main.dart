@@ -20,6 +20,7 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   Timer? hungerTimer;
   Timer? winTimer;
   bool isGameOver = false;
+  TextEditingController _nameController = TextEditingController();
 
   // Function to increase happiness and update hunger when playing with the pet
   void _playWithPet() {
@@ -182,13 +183,15 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   }
 
   // Start the game after setting the pet name
-  void _startGame(String name) {
-    setState(() {
-      petName = name;
-      gameStarted = true;
-    });
-    _startHungerTimer();
-    _startWinTimer();
+  void _startGame() {
+    if (_nameController.text.isNotEmpty) {
+      setState(() {
+        petName = _nameController.text;
+        gameStarted = true;
+      });
+      _startHungerTimer();
+      _startWinTimer();
+    }
   }
 
   @override
@@ -272,15 +275,16 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: TextField(
-                      onSubmitted: (value) {
-                        if (value.isNotEmpty) {
-                          _startGame(value);
-                        }
-                      },
+                      controller: _nameController,
                       decoration: InputDecoration(
                         hintText: 'Pet Name',
                       ),
                     ),
+                  ),
+                  SizedBox(height: 16.0),
+                  ElevatedButton(
+                    onPressed: _startGame,
+                    child: Text('Go'), // The "Go" button
                   ),
                 ],
               ),
